@@ -1,0 +1,41 @@
+.balloonHeader, .balloonBody, .balloonFooter {
+	font-family: 'Roboto', sans-serif;
+	white-space: nowrap;
+}
+
+.balloonHeader {
+	font-size: 26px;
+	padding-top: 5px;
+}
+
+.balloonBody .address {
+	font-size: 22px;
+	min-width: 300px;
+	padding-top: 10px;
+}
+
+.balloonBody .desc {
+	font-size: 18px;
+	white-space: normal;
+    line-height: 1.2;
+	padding-top: 5px;
+}
+
+.balloonFooter {
+	font-size: 16px;
+	padding-top: 5px;
+}
+
+.balloonFooter .worktime {
+    line-height: 1.4;
+}
+
+[class$="balloon__content"] > ymaps {
+	width: 100% !important;
+	height: 100% !important;
+}
+
+.hintBody {
+	font-size: 22px;
+	padding: 5px;
+}
