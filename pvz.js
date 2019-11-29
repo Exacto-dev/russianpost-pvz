@@ -26,8 +26,8 @@ function init(){
 	var indexFrom = 443961;
 
 	var myMap = new ymaps.Map("map", {
-		center: [53.19067, 50.17925],
-		zoom: 18,
+		center: [50, 70],
+		zoom: 4,
 		controls: ['zoomControl', 'searchControl', 'typeSelector',  'fullscreenControl']
 	}, {
 		searchControlProvider: 'yandex#search'
