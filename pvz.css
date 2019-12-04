@@ -6,6 +6,7 @@
 .balloonHeader {
 	font-size: 26px;
 	padding-top: 5px;
+	color: #001489;
 }
 
 .balloonBody .address {
@@ -24,6 +25,7 @@
 .balloonFooter {
 	font-size: 16px;
 	padding-top: 5px;
+	color: #666;
 }
 
 .balloonFooter .worktime {

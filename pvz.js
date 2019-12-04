@@ -21,17 +21,44 @@ function createHintContent(pvzObj) {
 	].join('\n');
 }
 
+function createFilterButton(mapObj, buttonName, filters) {
+	var filterButton = new ymaps.control.Button({
+		data: {
+			content: buttonName
+		},
+		options: {
+			maxWidth: 150
+		},
+		state: {
+			selected: true
+		}
+	});
+	
+	filterButton.events.add(['select', 'deselect'], function () {
+		filters[buttonName] = filterButton.isSelected();
+		objectManager.setFilter(function (obj) {
+			return filters[obj.properties.pvz.type];
+		});
+	});	
+
+	mapObj.controls.add(filterButton, {
+		float: "left"
+	});		
+}
+
 function init(){ 
 
-	var indexFrom = 443961;
+	const POST_OFFICE = 'Отделения почты';
+	const DELIVERY_POINT = 'Пункты выдачи';
 
-	var myMap = new ymaps.Map("map", {
+	var pvzMap = new ymaps.Map("map", {
 		center: [50, 70],
 		zoom: 4,
 		controls: ['zoomControl', 'searchControl', 'typeSelector',  'fullscreenControl']
 	}, {
 		searchControlProvider: 'yandex#search'
-	}),
+	});
+	
 	objectManager = new ymaps.ObjectManager({
 		clusterize: true,
 		clusterBalloonItemContentLayout: ymaps.templateLayoutFactory.createClass('{{ geoObject.properties.balloonContent|raw }}')
@@ -42,9 +69,13 @@ function init(){
 	objectManager.objects.options.set('preset', 'rupost#icon');
 	objectManager.clusters.options.set('preset', 'islands#blueClusterIcons');
 
-	myMap.geoObjects.add(objectManager);			
+	pvzMap.geoObjects.add(objectManager);	
 
-	$.getJSON('pvz.json',function(data){
+	filters = {[POST_OFFICE]: true, [DELIVERY_POINT]: true};
+	createFilterButton(pvzMap, POST_OFFICE, filters);
+	createFilterButton(pvzMap, DELIVERY_POINT, filters);
+
+	$.getJSON('pvz.json', function(data){
 		var yaCollection = {
 			type: "FeatureCollection",
 			features: []
@@ -67,17 +98,18 @@ function init(){
 				if (typeof pvz[key] == 'undefined') { pvz[key] = ""; };
 			}
 
-			pvz.address = pvz.place + (pvz.street != '' ? ', ' + pvz.street : '') + (pvz.house != '' ? ', ' + pvz.house : '')
+			pvz.address = pvz.place + (pvz.street != '' ? ', ' + pvz.street : '') + (pvz.house != '' ? ', ' + pvz.house : '');
+			pvz.type = pvz.brand == 'Почта России' ? POST_OFFICE : DELIVERY_POINT;
 
 			var yaObject = {
 				type: "Feature",
 				id: i++,
-				pvz: pvz,
 				geometry: {
 					type: "Point",
 					coordinates: [pvz.latitude, pvz.longitude]
 				},
-				properties: {				
+				properties: {	
+					pvz: pvz,			
 					clusterCaption: '<b>' + pvz.brand + ' - ' + pvz.index + '</b>',	
 					balloonContent: createBalloonContent(pvz),
 					hintContent: createHintContent(pvz)
